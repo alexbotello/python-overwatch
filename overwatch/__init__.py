@@ -112,6 +112,10 @@ class Overwatch:
         self.results['quickplay'] = mode
 
         # FIND COMPETITIVE STATS
+        # As of right now there are no hero specific competetive stats
+        # The only filters available are through hero='all'
+        # Ex: (hero='all', filter='played'), (hero='all', filter='best')
+
         # Find top played heroes in competitive
         count = 0
         played_stats = {}
