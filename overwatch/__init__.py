@@ -1,3 +1,4 @@
+import logging
 import requests
 from bs4 import BeautifulSoup
 
@@ -17,6 +18,8 @@ class Overwatch:
 
     def __init__(self, battletag=None, hero=None, filter=None,
                  mode=None, region=None):
+        # Logging
+        self.start_logging()
 
         self.region = region or self.default_region
         self.hero = hero or self.default_hero
@@ -33,8 +36,19 @@ class Overwatch:
                        'junkrat', 'zarya', 'soldier 76', 'lucio',
                        'dva', 'mei', 'sombra', 'ana']
 
+        # Fail safe for mode: competitve. Only "all" filter available
         if self.mode == 'competitive':
             self.hero = self.default_hero
+            self.logger.warning("Only '%s' filter is available", self.hero)
+
+    # Setup logging
+    def start_logging(self):
+        self.logger = logging.getLogger('python-overwatch')
+        self.handler = logging.StreamHandler()
+        self.logger.addHandler(self.handler)
+        self.logger.setLevel(logging.WARNING)
+        self.handler.setLevel(logging.WARNING)
+
 
     def get_results(self):
         """
@@ -176,7 +190,11 @@ class Overwatch:
         self.results['competitive'] = mode
 
         # Return results
-        return self.results[self.mode][self.hero][self.filter]
+        try:
+            return self.results[self.mode][self.hero][self.filter]
+        except KeyError:
+            self.logger.warning("'%s' and '%s' are not valid filter "
+                                "combinations", self.hero, self.filter)
 
 
     def show_filters(self):
