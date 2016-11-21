@@ -51,3 +51,27 @@ Find hero specific stats
       'Damage Blocked - Average', '2,521',
       'Blizzard Kills - Average', '3.34'
     ]
+
+Find overall best stats
+
+.. code:: python
+
+    from overwatch import overwatch
+
+    best = Overwatch(battletag=battletag, hero='all', filter='best')
+    results = best.get_results()
+    print(results)
+
+    [
+      'Eliminations - Most in Game', '48',
+      'Final Blows - Most in Game', '31',
+      'Damage Done - Most in Game', '23,924',
+      'Healing Done - Most in Game', '14,379', 
+      'Defensive Assists - Most in Game', '26',
+      'Offensive Assists - Most in Game', '8',
+      'Objective Kills - Most in Game', '32',
+      'Objective Time - Most in Game', '04:22',
+      'Multikill - Best', '5',
+      'Solo Kills - Most in Game', '31',
+      'Time Spent on Fire - Most in Game', '13:29'
+    ]
