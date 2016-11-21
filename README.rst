@@ -3,7 +3,7 @@ A wrapper for playoverwatch.com stats
 Installation
 ------------
 
-    pip install python-overwatch==0.7.2
+    pip install python-overwatch
 
 Examples
 ------------
@@ -15,7 +15,7 @@ Average stats for all heroes
     from overwatch import Overwatch
 
     average = Overwatch(battletag=battletag, mode='quickplay',
-                          filter='featured')
+                        filter='featured')
     results = average.get_results()
     print(results)
 
