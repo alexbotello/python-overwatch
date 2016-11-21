@@ -1,10 +1,9 @@
-# python-overwatch
 A wrapper for playoverwatch.com stats
 
 Installation
 ------------
 
-    pip install python-overwatch
+    pip install python-overwatch==0.7.2
 
 Examples
 ------------
