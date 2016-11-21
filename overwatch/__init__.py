@@ -31,7 +31,7 @@ class Overwatch:
                        'winston', 'widowmaker', 'bastion', 'symmetra',
                        'zenyatta', 'genji', 'roadhog', 'mcree',
                        'junkrat', 'zarya', 'soldier 76', 'lucio',
-                       'dva', 'mei', 'ana']
+                       'dva', 'mei', 'sombra', 'ana']
 
         if self.mode == 'competitive':
             self.hero = self.default_hero
@@ -98,7 +98,7 @@ class Overwatch:
                 all_stats[label.text.lower()] = stats
 
             # Stop loop to avoid scraping competitive stats
-            if hero == 23:
+            if hero == 24:
                 break
             else:
                 mode[self.heroes[hero]] = all_stats
