@@ -66,7 +66,7 @@ Find overall best stats
       'Eliminations - Most in Game', '48',
       'Final Blows - Most in Game', '31',
       'Damage Done - Most in Game', '23,924',
-      'Healing Done - Most in Game', '14,379', 
+      'Healing Done - Most in Game', '14,379',
       'Defensive Assists - Most in Game', '26',
       'Offensive Assists - Most in Game', '8',
       'Objective Kills - Most in Game', '32',
