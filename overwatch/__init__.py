@@ -29,6 +29,8 @@ class Overwatch:
 
         self.results = {}
 
+        self.areas = ['na', 'eu', 'us', 'cn', 'kr']
+
         self.heroes = ['all', 'reaper', 'tracer', 'mercy',
                        'hanzo', 'torbjorn', 'reinhardt', 'pharah',
                        'winston', 'widowmaker', 'bastion', 'symmetra',
@@ -36,6 +38,9 @@ class Overwatch:
                        'junkrat', 'zarya', 'soldier 76', 'lucio',
                        'dva', 'mei', 'sombra', 'ana']
 
+        if self.region not in self.areas:
+            self.logger.error("Not a valid region")
+            
         # Fail safe for mode: competitve. Only "all" filter available
         if self.mode == 'competitive':
             self.hero = self.default_hero
