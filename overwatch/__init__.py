@@ -7,7 +7,6 @@ class Overwatch:
     # TODO add in data validation for filters
     # TODO add a parse data function for stats
     # TODO add competetive stats for every hero
-    # TODO add logging
 
     base_url = 'https://playoverwatch.com/en-us/career/pc/'
 
@@ -21,13 +20,13 @@ class Overwatch:
         # Logging
         self.start_logging()
 
+        self.results = {}
+
         self.region = region or self.default_region
         self.hero = hero or self.default_hero
         self.battletag = battletag.replace('#', '-')
         self.filter = filter or self.default_filter
         self.mode = mode or self.default_mode
-
-        self.results = {}
 
         self.areas = ['na', 'eu', 'us', 'cn', 'kr']
 
@@ -40,7 +39,7 @@ class Overwatch:
 
         if self.region not in self.areas:
             self.logger.error("Not a valid region")
-            
+
         # Fail safe for mode: competitve. Only "all" filter available
         if self.mode == 'competitive':
             self.hero = self.default_hero

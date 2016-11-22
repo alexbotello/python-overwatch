@@ -24,5 +24,5 @@ setup(
     author_email='alexander.botello@g.austincc.edu',
     url='https://github.com/alexbotello/python-overwatch',
     install_requires=requirements,
-    license='MIT-Zero'
+    license='MIT'
 )
