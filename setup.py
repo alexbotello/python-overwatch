@@ -11,7 +11,7 @@ with open('requirements.txt', 'r') as r:
 with open('version.txt', 'r') as v:
     version = v.read().strip()
 
-with open('README.md') as f:
+with open('README.rst') as f:
     readme = f.read()
 
 setup(
