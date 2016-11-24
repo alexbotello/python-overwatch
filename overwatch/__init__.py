@@ -194,302 +194,118 @@ class Overwatch:
 
             # Find Reaper competitive stats
             if self.index == 1:
-                for reaper in comp.find_all('div', {'data-category-id':
-                                                    '0x02E0000000000002'}):
-                    all_stats = {}
-                    for block in reaper.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[1]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000002')
+                mode[self.heroes[1]] = stats
 
             # Find Tracer competitive stats
             if self.index == 2:
-                for tracer in comp.find_all('div', {'data-category-id':
-                                                    '0x02E0000000000003'}):
-                    all_stats = {}
-                    for block in tracer.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[2]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000003')
+                mode[self.heroes[2]] = stats
 
             # Find Mercy competitive stats
             if self.index == 3:
-                for mercy in comp.find_all('div', {'data-category-id':
-                                                   '0x02E0000000000004'}):
-                    all_stats = {}
-                    for block in mercy.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[3]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000004')
+                mode[self.heroes[3]] = stats
 
             # Find Hanzo competitive stats
             if self.index == 4:
-                for hanzo in comp.find_all('div', {'data-category-id':
-                                                   '0x02E0000000000005'}):
-                    all_stats = {}
-                    for block in hanzo.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[4]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000005')
+                mode[self.heroes[4]] = stats
 
             # Find Torbjorn competitive stats
             if self.index == 5:
-                for torb in comp.find_all('div', {'data-category-id':
-                                                  '0x02E0000000000006'}):
-                    all_stats = {}
-                    for block in torb.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[5]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000006')
+                mode[self.heroes[5]] = stats
 
             # Find Reinhardt competitive stats
             if self.index == 6:
-                for rein in comp.find_all('div', {'data-category-id':
-                                                  '0x02E0000000000007'}):
-                    all_stats = {}
-                    for block in rein.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[6]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000007')
+                mode[self.heroes[6]] = stats
 
             # Find Pharah competitive stats
             if self.index == 7:
-                for pharah in comp.find_all('div', {'data-category-id':
-                                                    '0x02E0000000000008'}):
-                    all_stats = {}
-                    for block in pharah.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[7]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000008')
+                mode[self.heroes[7]] = stats
 
             # Find Winston competitive stats
             if self.index == 8:
-                for winston in comp.find_all('div', {'data-category-id':
-                                                     '0x02E0000000000009'}):
-                    all_stats = {}
-                    for block in winston.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[8]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000009')
+                mode[self.heroes[8]] = stats
 
             # Find Widowmaker competitive stats
             if self.index == 9:
-                for widow in comp.find_all('div', {'data-category-id':
-                                                   '0x02E000000000000A'}):
-                    all_stats = {}
-                    for block in widow.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[9]] = all_stats
+                stats = self.find_stats(comp, '0x02E000000000000A')
+                mode[self.heroes[9]] = stats
 
             # Find Bastion competitive stats
             if self.index == 10:
-                for bast in comp.find_all('div', {'data-category-id':
-                                                  '0x02E0000000000015'}):
-                    all_stats = {}
-                    for block in bast.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[10]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000015')
+                mode[self.heroes[10]] = stats
 
             # Find Symmetra competitive stats
             if self.index == 11:
-                for sym in comp.find_all('div', {'data-category-id':
-                                                 '0x02E0000000000016'}):
-                    all_stats = {}
-                    for block in sym.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[11]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000016')
+                mode[self.heroes[11]] = stats
 
             # Find Zenyatta competitive stats
             if self.index == 12:
-                for zen in comp.find_all('div', {'data-category-id':
-                                                 '0x02E0000000000020'}):
-                    all_stats = {}
-                    for block in zen.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[12]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000020')
+                mode[self.heroes[12]] = stats
 
             # Find Genji competitive stats
             if self.index == 13:
-                for genji in comp.find_all('div', {'data-category-id':
-                                                   '0x02E0000000000029'}):
-                    all_stats = {}
-                    for block in genji.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[13]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000029')
+                mode[self.heroes[13]] = stats
 
             # Find RoadHog competitive stats
             if self.index == 14:
-                for hog in comp.find_all('div', {'data-category-id':
-                                                 '0x02E0000000000040'}):
-                    all_stats = {}
-                    for block in hog.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[14]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000040')
+                mode[self.heroes[14]] = stats
 
             # Find Mcree competitive stats
             if self.index == 15:
-                for mcree in comp.find_all('div', {'data-category-id':
-                                                   '0x02E0000000000042'}):
-                    all_stats = {}
-                    for block in mcree.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[15]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000042')
+                mode[self.heroes[15]] = stats
 
             # Find Junkrat competitive stats
             if self.index == 16:
-                for junk in comp.find_all('div', {'data-category-id':
-                                                  '0x02E0000000000065'}):
-                    all_stats = {}
-                    for block in junk.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[16]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000065')
+                mode[self.heroes[16]] = stats
 
             # Find Zarya competitive stats
             if self.index == 17:
-                for zarya in comp.find_all('div', {'data-category-id':
-                                                   '0x02E0000000000068'}):
-                    all_stats = {}
-                    for block in zarya.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[17]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000068')
+                mode[self.heroes[17]] = stats
 
             # Find Soldier:76 competitive stats
             if self.index == 18:
-                for soldier in comp.find_all('div', {'data-category-id':
-                                                     '0x02E000000000006E'}):
-                    all_stats = {}
-                    for block in soldier.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[18]] = all_stats
+                stats = self.find_stats(comp, '0x02E000000000006E')
+                mode[self.heroes[18]] = stats
 
             # Find Lucio competitive stats
             if self.index == 19:
-                for lucio in comp.find_all('div', {'data-category-id':
-                                                   '0x02E0000000000079'}):
-                    all_stats = {}
-                    for block in lucio.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[19]] = all_stats
+                stats = self.find_stats(comp, '0x02E0000000000079')
+                mode[self.heroes[19]] = stats
 
             # Find Dva competitive stats
             if self.index == 20:
-                for dva in comp.find_all('div', {'data-category-id':
-                                                 '0x02E000000000007A'}):
-                    all_stats = {}
-                    for block in dva.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[20]] = all_stats
+                stats = self.find_stats(comp, '0x02E000000000007A')
+                mode[self.heroes[20]] = stats
 
             # Find Mei competitive stats
             if self.index == 21:
-                for mei in comp.find_all('div', {'data-category-id':
-                                                 '0x02E00000000000DD'}):
-                    all_stats = {}
-                    for block in mei.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[21]] = all_stats
+                stats = self.find_stats(comp, '0x02E00000000000DD')
+                mode[self.heroes[21]] = stats
 
             # Find Sombra competitive stats
             if self.index == 22:
-                for sombra in comp.find_all('div', {'data-category-id':
-                                                    '0x02E000000000012E'}):
-                    all_stats = {}
-                    for block in sombra.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[22]] = all_stats
+                stats = self.find_stats(comp, '0x02E000000000012E')
+                mode[self.heroes[22]] = stats
 
             # Find Ana competitive stats
             if self.index == 23:
-                for ana in comp.find_all('div', {'data-category-id':
-                                                 '0x02E000000000013B'}):
-                    all_stats = {}
-                    for block in ana.find_all('div', {'card-stat-block'}):
-                        stats = []
-                        label = block.find('span', {'class': 'stat-title'})
-                        for attr in block.find_all('td'):
-                            stats.append(attr.text)
-                        all_stats[label.text.lower()] = stats
-                    mode[self.heroes[23]] = all_stats
+                stats = self.find_stats(comp, '0x02E000000000013B')
+                mode[self.heroes[23]] = stats
 
             # Add 'played' and 'featured' into 'all' dict
             mode[self.heroes[0]].update(played_stats)
@@ -504,6 +320,21 @@ class Overwatch:
         except KeyError:
             self.logger.warning("'%s' and '%s' are not valid filter "
                                 "combinations", self.hero, self.filter)
+
+    def find_stats(self, soup, html):
+        """
+        Use for finding individual competitive hero stats
+        """
+        for hero in soup.find_all('div', {'data-category-id':
+                                         html}):
+            all_stats = {}
+            for block in hero.find_all('div', {'card-stat-block'}):
+                stats = []
+                label = block.find('span', {'class': 'stat-title'})
+                for attr in block.find_all('td'):
+                    stats.append(attr.text)
+                all_stats[label.text.lower()] = stats
+            return all_stats
 
 
     def show_filters(self):
