@@ -142,55 +142,51 @@ class Overwatch:
             played_stats = {}
             stats = []
 
+            # HTML section for competitive stats
+            comp = soup.find('div', {'id': 'competitive'})
+
             # Find competitive stat section
-            for play in soup.find_all('div', {'id': 'competitive'}):
-                for block in play.find_all('div', {'class': 'bar-container'}):
-                    title = block.find('div', {'class': 'title'})
-                    stats.append(title.text)
-                    hours = block.find('div', {'class': 'description'})
-                    stats.append(hours.text)
+            for block in comp.find_all('div', {'class': 'bar-container'}):
+                title = block.find('div', {'class': 'title'})
+                stats.append(title.text)
+                hours = block.find('div', {'class': 'description'})
+                stats.append(hours.text)
 
                     # Grab only the top six
-                    if count < 5:
-                        count += 1
-                    else:
-                        break
+                if count < 5:
+                    count += 1
+                else:
+                    break
             played_stats['played'] = stats
 
             # Find featured stats in competitive
             count = 0
             featured_stats = {}
             stats = []
-
-            for play in soup.find_all('div', {'id': 'competitive'}):
-                for card in soup.find_all('div', {'class': 'card-content'}):
-                    # Skip the first 8 results
-                    if count >= 8:
-                        stat_title = card.find('p', {'class': 'card-copy'})
-                        stats.append(stat_title.text)
-                        data = card.find('h3', {'class': 'card-heading'})
-                        stats.append(data.text)
-                        count += 1
-                    else:
-                        count += 1
-
+            for card in comp.find_all('div', {'class': 'card-content'}):
+                # Skip the first 8 results
+                if count >= 8:
+                    stat_title = card.find('p', {'class': 'card-copy'})
+                    stats.append(stat_title.text)
+                    data = card.find('h3', {'class': 'card-heading'})
+                    stats.append(data.text)
+                    count += 1
+                else:
+                    count += 1
             featured_stats['featured'] = stats
 
             # Find Competitive stats for all heroes
             mode = {}
-            for comp in soup.find_all('div', {'data-category-id':
+            for every in comp.find_all('div', {'data-category-id':
                                               '0x02E00000FFFFFFFF'}):
                 all_stats = {}
-                for block in comp.find_all('div', {'card-stat-block'}):
+                for block in every.find_all('div', {'card-stat-block'}):
                     stats = []
                     label = block.find('span', {'class': 'stat-title'})
                     for attr in block.find_all('td'):
                         stats.append(attr.text)
                     all_stats[label.text.lower()] = stats
                 mode[self.heroes[0]] = all_stats
-
-            # HTML section for competitive stats
-            comp = soup.find('div', {'id': 'competitive'})
 
             # Find Reaper competitive stats
             if self.index == 1:
@@ -325,8 +321,7 @@ class Overwatch:
         """
         Use for finding individual competitive hero stats
         """
-        for hero in soup.find_all('div', {'data-category-id':
-                                         html}):
+        for hero in soup.find_all('div', {'data-category-id': html}):
             all_stats = {}
             for block in hero.find_all('div', {'card-stat-block'}):
                 stats = []
