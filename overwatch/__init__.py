@@ -4,8 +4,6 @@ from bs4 import BeautifulSoup
 
 
 class Overwatch:
-    # TODO add in data validation for filters
-    # TODO add a parse data function for stats
 
     base_url = 'https://playoverwatch.com/en-us/career/pc/'
 
@@ -152,7 +150,7 @@ class Overwatch:
                 hours = block.find('div', {'class': 'description'})
                 stats.append(hours.text)
 
-                    # Grab only the top six
+                # Grab only the top six
                 if count < 5:
                     count += 1
                 else:
@@ -316,6 +314,9 @@ class Overwatch:
         except KeyError:
             self.logger.warning("'%s' and '%s' are not valid filter "
                                 "combinations", self.hero, self.filter)
+        except TypeError:
+            self.logger.warning('Found No Competitive Stats For This Hero')
+
 
     def find_stats(self, soup, html):
         """
