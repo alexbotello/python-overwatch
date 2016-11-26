@@ -28,14 +28,14 @@ class Overwatch:
         self.filter = filter or self.default_filter
         self.mode = mode or self.default_mode
 
-        self.areas = ['na', 'eu', 'us', 'cn', 'kr']
+        self.areas = ('na', 'eu', 'us', 'cn', 'kr')
 
-        self.heroes = ['all', 'reaper', 'tracer', 'mercy',
+        self.heroes = ('all', 'reaper', 'tracer', 'mercy',
                        'hanzo', 'torbjorn', 'reinhardt', 'pharah',
                        'winston', 'widowmaker', 'bastion', 'symmetra',
                        'zenyatta', 'genji', 'roadhog', 'mcree',
                        'junkrat', 'zarya', 'soldier 76', 'lucio',
-                       'dva', 'mei', 'sombra', 'ana']
+                       'dva', 'mei', 'sombra', 'ana')
 
         if self.region not in self.areas:
             self.logger.error("Not a valid region")
@@ -315,7 +315,7 @@ class Overwatch:
             self.logger.warning("'%s' and '%s' are not valid filter "
                                 "combinations", self.hero, self.filter)
         except TypeError:
-            self.logger.warning('Found No Competitive Stats For This Hero')
+            self.logger.warning('Found no competitive stats for this hero')
 
 
     def find_stats(self, soup, html):
