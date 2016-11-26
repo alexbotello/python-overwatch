@@ -161,7 +161,7 @@ class Overwatch:
             count = 0
             featured_stats = {}
             stats = []
-            for card in comp.find_all('div', {'class': 'card-content'}):
+            for card in soup.find_all('div', {'class': 'card-content'}):
                 # Skip the first 8 results
                 if count >= 8:
                     stat_title = card.find('p', {'class': 'card-copy'})
