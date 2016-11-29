@@ -337,13 +337,19 @@ class Overwatch:
         """
         Shows filters that can be specified
         """
-        print('Modes: ')
-        for k in self.results.keys():
-            print('\t* ' + k)
-        print('Heroes:')
-        for k in self.results['quickplay'].keys():
-            print('\t* ' + k)
-        print('Filters:')
-        for k in self.results['quickplay']['all'].keys():
-            print('\t* ' + k)
-        print('\t* hero specific')
+        response = requests.get(self.base_url + self.region + '/' +
+                                self.battletag)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        count = 0
+        filters = []
+        for label in soup.find_all('span', {'class': 'stat-title'}):
+            if count < 9:
+                filters.append(label.text.lower())
+                count += 1
+            else:
+                filters.append('played')
+                filters.append('featured')
+                break
+        print('Modes:  quickplay\n\tcompetitive\n')
+        print('Filters: ', end='')
+        print(filters)
