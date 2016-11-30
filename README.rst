@@ -5,6 +5,15 @@ Installation
 
     pip install python-overwatch
 
+Usage
+------------
+
+    Modes:  quickplay
+            competitive
+
+    Filters: combat, assists, best, average, deaths, match awards
+             game, miscellaneous, hero specific, played, featured
+
 Examples
 ------------
 
@@ -14,7 +23,8 @@ Find your average stats for all heroes
 
     from overwatch import Overwatch
 
-    average = Overwatch(battletag=battletag, hero='all', filter='featured')
+    average = Overwatch(battletag=battletag, hero='all', mode='quickplay',
+                        filter='featured')
     results = average.get_results()
     print(results)
 
@@ -56,7 +66,7 @@ Find overall best stats
 
 .. code:: python
 
-    from overwatch import overwatch
+    from overwatch import Overwatch
 
     best = Overwatch(battletag=battletag, hero='all', filter='best')
     results = best.get_results()
@@ -74,4 +84,22 @@ Find overall best stats
       'Multikill - Best', '5',
       'Solo Kills - Most in Game', '31',
       'Time Spent on Fire - Most in Game', '13:29'
+    ]
+
+Find how many D.VA self-destructs you've performed
+
+.. code:: python
+
+    from overwatch import Overwatch
+
+    selfies = Overwatch(battletag=battletag, hero='dva',
+                        mode='quickplay', filter='miscellaneous')
+    results = selfies.get_results()
+    print(results)
+
+    [
+      'Self-Destruct Kills', '39',
+      'Self-Destruct Kills - Most in Game', '6',
+      'Multikill - Best', '3',
+      'Self-Destruct Kills - Average', '2'
     ]
