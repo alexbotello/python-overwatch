@@ -8,6 +8,8 @@ Installation
 Usage
 ------------
 
+.. code:: python
+
     Modes:  quickplay
             competitive
 
