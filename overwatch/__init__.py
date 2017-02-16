@@ -19,9 +19,12 @@ class Overwatch:
         # Flags
         self.wants_quickplay = False
         self.wants_competitive = False
+        self.wants_qp_played = False
+        self.wants_cp_played = False
+        self.wants_qp_feat = False
+        self.wants_cp_feat = False
 
-        self.results = {}
-
+        # Settings
         self.region = region or self.default_region
         self.hero = hero or self.default_hero
         self.battletag = battletag.replace('#', '-')
@@ -40,16 +43,34 @@ class Overwatch:
         if self.region not in self.areas:
             self.logger.error("Not a valid region")
 
-        if self.mode == 'quickplay':
+        # Flag switches
+        if self.mode == 'quickplay' and self.filter == 'featured':
+            self.wants_qp_feat = True
+
+        elif self.mode == 'quickplay' and self.filter == 'played':
+            self.wants_qp_played = True
+
+        elif self.mode == "quickplay":
             self.wants_quickplay = True
 
-        if self.mode == 'competitive':
+        elif self.mode == 'competitive' and self.filter == 'featured':
+            self.wants_cp_feat = True
+
+        elif self.mode == 'competitive' and self.filter == 'played':
+            self.wants_cp_played = True
+
+        elif self.mode == 'competitive':
             self.wants_competitive = True
 
         self.index = self.heroes.index(self.hero)
 
+
     # Setup logging
     def start_logging(self):
+        """
+        Initialize logging
+        """
+
         self.logger = logging.getLogger('python-overwatch')
         self.handler = logging.StreamHandler()
         self.logger.addHandler(self.handler)
@@ -61,256 +82,279 @@ class Overwatch:
         """
         Gets results from playoverwatch.com based on filters provided
         """
-
         response = requests.get(self.base_url + self.region + '/' +
                                 self.battletag)
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # FIND QUICKPLAY STATS
-        # Find top played heroes in quickplay
         if self.wants_quickplay:
-            count = 0
-            played_stats = {}
-            stats = []
+            results = self.find_quickplay_heroes(soup, self.hero, self.filter)
 
-            for block in soup.find_all('div', {'class': 'bar-container'}):
-                title = block.find('div', {'class': 'title'})
-                stats.append(title.text)
-                hours = block.find('div', {'class': 'description'})
-                stats.append(hours.text)
+        elif self.wants_qp_played:
+            results = self.find_quickplay_top(soup)
 
-                # Grab only the top six
-                if count < 5:
-                    count += 1
-                else:
-                    break
-            played_stats['played'] = stats
+        elif self.wants_qp_feat:
+            results = self.find_quickplay_feat(soup)
 
-            # Find featured stats in quickplay
-            count = 0
-            featured_stats = {}
-            stats = []
+        elif self.wants_cp_feat:
+            results = self.find_comp_feat(soup)
 
-            for card in soup.find_all('div', {'class': 'card-content'}):
+        elif self.wants_cp_played:
+            results = self.find_comp_top(soup)
+
+        elif self.wants_competitive:
+            results = self.find_comp_heroes(soup, self.hero, self.filter)
+
+        return results
+
+
+    def find_quickplay_heroes(self, soup, character, filter):
+        """
+        Finds quickplay hero stats
+        """
+        # Find quickplay stats for every hero
+        mode = {}
+        hero = 0
+
+        # Find each hero's stat page
+        for char in soup.find_all('div', {'data-group-id': 'stats'}):
+            all_stats = {}
+            # Loop though each subsection
+            for block in char.find_all('div', {'class': 'card-stat-block'}):
+                stats = []
+                label = block.find('span', {'class': 'stat-title'})
+                for attr in block.find_all('td'):
+                    stats.append(attr.text)
+                all_stats[label.text.lower()] = stats
+
+            # Stop loop to avoid scraping competitive stats
+            if hero == 24:
+                break
+            else:
+                mode[self.heroes[hero]] = all_stats
+                hero += 1
+        try:
+            return mode[character][filter]
+
+        except KeyError:
+            self.logger.warning("'%s' and '%s' are not valid filter "
+                                "combinations", self.hero, self.filter)
+
+
+    def find_quickplay_top(self, soup):
+        """
+        Finds top played heroes
+        """
+        count = 0
+        stats = []
+
+        for block in soup.find_all('div', {'class': 'bar-container'}):
+            title = block.find('div', {'class': 'title'})
+            stats.append(title.text)
+            hours = block.find('div', {'class': 'description'})
+            stats.append(hours.text)
+
+            # Grab only the top six
+            if count < 5:
+                count += 1
+            else:
+                break
+        return stats
+
+
+    def find_quickplay_feat(self, soup):
+        """
+        Finds quickplay average stats
+        """
+        count = 0
+        stats = []
+
+        for card in soup.find_all('div', {'class': 'card-content'}):
+            stat_title = card.find('p', {'class': 'card-copy'})
+            stats.append(stat_title.text)
+            data = card.find('h3', {'class': 'card-heading'})
+            stats.append(data.text)
+
+            # Grab only the first eight results
+            if count < 7:
+                count += 1
+            else:
+                break
+        return stats
+
+
+    def find_comp_top(self, soup):
+        """
+        Finds competitive top heroes played
+        """
+        count = 0
+        stats = []
+
+        # HTML section for competitive stats
+        comp = soup.find('div', {'id': 'competitive'})
+
+        # Find competitive stat section
+        for block in comp.find_all('div', {'class': 'bar-container'}):
+            title = block.find('div', {'class': 'title'})
+            stats.append(title.text)
+            hours = block.find('div', {'class': 'description'})
+            stats.append(hours.text)
+
+            # Grab only the top six
+            if count < 5:
+                count += 1
+            else:
+                break
+        return stats
+
+    def find_comp_feat(self, soup):
+        """
+        Finds competitive average stats
+        """
+        count = 0
+        stats = []
+        for card in soup.find_all('div', {'class': 'card-content'}):
+            # Skip the first 8 results
+            if count >= 8:
                 stat_title = card.find('p', {'class': 'card-copy'})
                 stats.append(stat_title.text)
                 data = card.find('h3', {'class': 'card-heading'})
                 stats.append(data.text)
+                count += 1
+            else:
+                count += 1
+        return stats
 
-                # Grab only the first eight results
-                if count < 7:
-                    count += 1
-                else:
-                    break
-            featured_stats['featured'] = stats
+    def find_comp_heroes(self, soup, character, filter):
+        """
+        Finds competitive hero stats
+        """
+        # HTML section for competitive stats
+        comp = soup.find('div', {'id': 'competitive'})
+        # Find Competitive stats for all heroes
+        mode = {}
 
-            # Find quickplay stats for every hero
-            mode = {}
-            hero = 0
+        # Find All Hero competitive
+        if self.index == 0:
+            stats = self.locate_stats(comp, '0x02E00000FFFFFFFF')
+            mode[self.heroes[0]] = stats
 
-            # Find each hero's stat page
-            for char in soup.find_all('div', {'data-group-id': 'stats'}):
-                all_stats = {}
-                # Loop though each subsection
-                for block in char.find_all('div', {'class': 'card-stat-block'}):
-                    stats = []
-                    label = block.find('span', {'class': 'stat-title'})
-                    for attr in block.find_all('td'):
-                        stats.append(attr.text)
-                    all_stats[label.text.lower()] = stats
+        # Find Reaper competitive stats
+        elif self.index == 1:
+            stats = self.locate_stats(comp, '0x02E0000000000002')
+            mode[self.heroes[1]] = stats
 
-                # Stop loop to avoid scraping competitive stats
-                if hero == 24:
-                    break
-                else:
-                    mode[self.heroes[hero]] = all_stats
-                    hero += 1
+        # Find Tracer competitive stats
+        elif self.index == 2:
+            stats = self.locate_stats(comp, '0x02E0000000000003')
+            mode[self.heroes[2]] = stats
 
-            # Add 'played' and 'featured' into 'all' dict
-            mode[self.heroes[0]].update(played_stats)
-            mode[self.heroes[0]].update(featured_stats)
+        # Find Mercy competitive stats
+        elif self.index == 3:
+            stats = self.locate_stats(comp, '0x02E0000000000004')
+            mode[self.heroes[3]] = stats
 
-            # Enter all stats into mode 'quickplay'
-            self.results['quickplay'] = mode
+        # Find Hanzo competitive stats
+        elif self.index == 4:
+            stats = self.locate_stats(comp, '0x02E0000000000005')
+            mode[self.heroes[4]] = stats
 
-        # FIND COMPETITIVE STATS
-        if self.wants_competitive:
-            # Find top played heroes in competitive
-            count = 0
-            played_stats = {}
-            stats = []
+        # Find Torbjorn competitive stats
+        elif self.index == 5:
+            stats = self.locate_stats(comp, '0x02E0000000000006')
+            mode[self.heroes[5]] = stats
 
-            # HTML section for competitive stats
-            comp = soup.find('div', {'id': 'competitive'})
+        # Find Reinhardt competitive stats
+        elif self.index == 6:
+            stats = self.locate_stats(comp, '0x02E0000000000007')
+            mode[self.heroes[6]] = stats
 
-            # Find competitive stat section
-            for block in comp.find_all('div', {'class': 'bar-container'}):
-                title = block.find('div', {'class': 'title'})
-                stats.append(title.text)
-                hours = block.find('div', {'class': 'description'})
-                stats.append(hours.text)
+        # Find Pharah competitive stats
+        elif self.index == 7:
+            stats = self.locate_stats(comp, '0x02E0000000000008')
+            mode[self.heroes[7]] = stats
 
-                # Grab only the top six
-                if count < 5:
-                    count += 1
-                else:
-                    break
-            played_stats['played'] = stats
+        # Find Winston competitive stats
+        elif self.index == 8:
+            stats = self.locate_stats(comp, '0x02E0000000000009')
+            mode[self.heroes[8]] = stats
 
-            # Find featured stats in competitive
-            count = 0
-            featured_stats = {}
-            stats = []
-            for card in soup.find_all('div', {'class': 'card-content'}):
-                # Skip the first 8 results
-                if count >= 8:
-                    stat_title = card.find('p', {'class': 'card-copy'})
-                    stats.append(stat_title.text)
-                    data = card.find('h3', {'class': 'card-heading'})
-                    stats.append(data.text)
-                    count += 1
-                else:
-                    count += 1
-            featured_stats['featured'] = stats
+        # Find Widowmaker competitive stats
+        elif self.index == 9:
+            stats = self.locate_stats(comp, '0x02E000000000000A')
+            mode[self.heroes[9]] = stats
 
-            # Find Competitive stats for all heroes
-            mode = {}
-            for every in comp.find_all('div', {'data-category-id':
-                                              '0x02E00000FFFFFFFF'}):
-                all_stats = {}
-                for block in every.find_all('div', {'card-stat-block'}):
-                    stats = []
-                    label = block.find('span', {'class': 'stat-title'})
-                    for attr in block.find_all('td'):
-                        stats.append(attr.text)
-                    all_stats[label.text.lower()] = stats
-                mode[self.heroes[0]] = all_stats
+        # Find Bastion competitive stats
+        elif self.index == 10:
+            stats = self.locate_stats(comp, '0x02E0000000000015')
+            mode[self.heroes[10]] = stats
 
-            # Find Reaper competitive stats
-            if self.index == 1:
-                stats = self.find_stats(comp, '0x02E0000000000002')
-                mode[self.heroes[1]] = stats
+        # Find Symmetra competitive stats
+        elif self.index == 11:
+            stats = self.locate_stats(comp, '0x02E0000000000016')
+            mode[self.heroes[11]] = stats
 
-            # Find Tracer competitive stats
-            if self.index == 2:
-                stats = self.find_stats(comp, '0x02E0000000000003')
-                mode[self.heroes[2]] = stats
+        # Find Zenyatta competitive stats
+        elif self.index == 12:
+            stats = self.locate_stats(comp, '0x02E0000000000020')
+            mode[self.heroes[12]] = stats
 
-            # Find Mercy competitive stats
-            if self.index == 3:
-                stats = self.find_stats(comp, '0x02E0000000000004')
-                mode[self.heroes[3]] = stats
+        # Find Genji competitive stats
+        elif self.index == 13:
+            stats = self.locate_stats(comp, '0x02E0000000000029')
+            mode[self.heroes[13]] = stats
 
-            # Find Hanzo competitive stats
-            if self.index == 4:
-                stats = self.find_stats(comp, '0x02E0000000000005')
-                mode[self.heroes[4]] = stats
+        # Find RoadHog competitive stats
+        elif self.index == 14:
+            stats = self.locate_stats(comp, '0x02E0000000000040')
+            mode[self.heroes[14]] = stats
 
-            # Find Torbjorn competitive stats
-            if self.index == 5:
-                stats = self.find_stats(comp, '0x02E0000000000006')
-                mode[self.heroes[5]] = stats
+        # Find Mcree competitive stats
+        elif self.index == 15:
+            stats = self.locate_stats(comp, '0x02E0000000000042')
+            mode[self.heroes[15]] = stats
 
-            # Find Reinhardt competitive stats
-            if self.index == 6:
-                stats = self.find_stats(comp, '0x02E0000000000007')
-                mode[self.heroes[6]] = stats
+        # Find Junkrat competitive stats
+        elif self.index == 16:
+            stats = self.locate_stats(comp, '0x02E0000000000065')
+            mode[self.heroes[16]] = stats
 
-            # Find Pharah competitive stats
-            if self.index == 7:
-                stats = self.find_stats(comp, '0x02E0000000000008')
-                mode[self.heroes[7]] = stats
+        # Find Zarya competitive stats
+        elif self.index == 17:
+            stats = self.locate_stats(comp, '0x02E0000000000068')
+            mode[self.heroes[17]] = stats
 
-            # Find Winston competitive stats
-            if self.index == 8:
-                stats = self.find_stats(comp, '0x02E0000000000009')
-                mode[self.heroes[8]] = stats
+        # Find Soldier:76 competitive stats
+        elif self.index == 18:
+            stats = self.locate_stats(comp, '0x02E000000000006E')
+            mode[self.heroes[18]] = stats
 
-            # Find Widowmaker competitive stats
-            if self.index == 9:
-                stats = self.find_stats(comp, '0x02E000000000000A')
-                mode[self.heroes[9]] = stats
+        # Find Lucio competitive stats
+        elif self.index == 19:
+            stats = self.locate_stats(comp, '0x02E0000000000079')
+            mode[self.heroes[19]] = stats
 
-            # Find Bastion competitive stats
-            if self.index == 10:
-                stats = self.find_stats(comp, '0x02E0000000000015')
-                mode[self.heroes[10]] = stats
+        # Find Dva competitive stats
+        elif self.index == 20:
+            stats = self.locate_stats(comp, '0x02E000000000007A')
+            mode[self.heroes[20]] = stats
 
-            # Find Symmetra competitive stats
-            if self.index == 11:
-                stats = self.find_stats(comp, '0x02E0000000000016')
-                mode[self.heroes[11]] = stats
+        # Find Mei competitive stats
+        elif self.index == 21:
+            stats = self.locate_stats(comp, '0x02E00000000000DD')
+            mode[self.heroes[21]] = stats
 
-            # Find Zenyatta competitive stats
-            if self.index == 12:
-                stats = self.find_stats(comp, '0x02E0000000000020')
-                mode[self.heroes[12]] = stats
+        # Find Sombra competitive stats
+        elif self.index == 22:
+            stats = self.locate_stats(comp, '0x02E000000000012E')
+            mode[self.heroes[22]] = stats
 
-            # Find Genji competitive stats
-            if self.index == 13:
-                stats = self.find_stats(comp, '0x02E0000000000029')
-                mode[self.heroes[13]] = stats
+        # Find Ana competitive stats
+        else:
+            stats = self.locate_stats(comp, '0x02E000000000013B')
+            mode[self.heroes[23]] = stats
 
-            # Find RoadHog competitive stats
-            if self.index == 14:
-                stats = self.find_stats(comp, '0x02E0000000000040')
-                mode[self.heroes[14]] = stats
-
-            # Find Mcree competitive stats
-            if self.index == 15:
-                stats = self.find_stats(comp, '0x02E0000000000042')
-                mode[self.heroes[15]] = stats
-
-            # Find Junkrat competitive stats
-            if self.index == 16:
-                stats = self.find_stats(comp, '0x02E0000000000065')
-                mode[self.heroes[16]] = stats
-
-            # Find Zarya competitive stats
-            if self.index == 17:
-                stats = self.find_stats(comp, '0x02E0000000000068')
-                mode[self.heroes[17]] = stats
-
-            # Find Soldier:76 competitive stats
-            if self.index == 18:
-                stats = self.find_stats(comp, '0x02E000000000006E')
-                mode[self.heroes[18]] = stats
-
-            # Find Lucio competitive stats
-            if self.index == 19:
-                stats = self.find_stats(comp, '0x02E0000000000079')
-                mode[self.heroes[19]] = stats
-
-            # Find Dva competitive stats
-            if self.index == 20:
-                stats = self.find_stats(comp, '0x02E000000000007A')
-                mode[self.heroes[20]] = stats
-
-            # Find Mei competitive stats
-            if self.index == 21:
-                stats = self.find_stats(comp, '0x02E00000000000DD')
-                mode[self.heroes[21]] = stats
-
-            # Find Sombra competitive stats
-            if self.index == 22:
-                stats = self.find_stats(comp, '0x02E000000000012E')
-                mode[self.heroes[22]] = stats
-
-            # Find Ana competitive stats
-            if self.index == 23:
-                stats = self.find_stats(comp, '0x02E000000000013B')
-                mode[self.heroes[23]] = stats
-
-            # Add 'played' and 'featured' into 'all' dict
-            mode[self.heroes[0]].update(played_stats)
-            mode[self.heroes[0]].update(featured_stats)
-
-            # Enter all stats into mode 'competitive'
-            self.results['competitive'] = mode
-
-        # Return results
         try:
-            return self.results[self.mode][self.hero][self.filter]
+            return mode[character][filter]
         except KeyError:
             self.logger.warning("'%s' and '%s' are not valid filter "
                                 "combinations", self.hero, self.filter)
@@ -318,7 +362,7 @@ class Overwatch:
             self.logger.warning('Found no competitive stats for this hero')
 
 
-    def find_stats(self, soup, html):
+    def locate_stats(self, soup, html):
         """
         Use for finding individual competitive hero stats
         """
@@ -333,23 +377,21 @@ class Overwatch:
             return all_stats
 
 
-    def show_filters(self):
+    def display_filters(self):
         """
-        Shows filters that can be specified
         """
         response = requests.get(self.base_url + self.region + '/' +
                                 self.battletag)
         soup = BeautifulSoup(response.content, 'html.parser')
         count = 0
         filters = []
-        for label in soup.find_all('span', {'class': 'stat-title'}):
+
+        for block in soup.find_all('div', {'card-stat-block'}):
+            label = block.find('span', {'class': 'stat-title'})
             if count < 9:
                 filters.append(label.text.lower())
                 count += 1
-            else:
-                filters.append('played')
-                filters.append('featured')
-                break
-        print('Modes:  quickplay\n\tcompetitive\n')
-        print('Filters: ', end='')
+        filters.append('played')
+        filters.append('featured')
+
         print(filters)
