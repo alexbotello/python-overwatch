@@ -42,6 +42,11 @@ class Overwatch:
 
         if self.region not in self.areas:
             self.logger.error("Not a valid region")
+            exit()
+
+        if self.hero not in self.heroes:
+            self.logger.warning('Not a valid hero selection')
+            exit()
 
         # Flag switches
         if self.mode == 'quickplay' and self.filter == 'featured':
@@ -104,8 +109,11 @@ class Overwatch:
         elif self.wants_competitive:
             results = self.find_comp_heroes(soup, self.hero, self.filter)
 
-        return self.dict_zip(results)
+        try:
+            return self.dict_zip(results)
 
+        except Exception as e:
+            self.logger.warning("Failed query, Exiting....")
 
     def find_quickplay_heroes(self, soup, character, filter):
         """
