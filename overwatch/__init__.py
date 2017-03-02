@@ -377,7 +377,7 @@ class Overwatch:
             return all_stats
 
 
-    def dict_zip(results):
+    def dict_zip(self, results):
         """
         Converts list of results into a dictionary
         """
