@@ -104,7 +104,7 @@ class Overwatch:
         elif self.wants_competitive:
             results = self.find_comp_heroes(soup, self.hero, self.filter)
 
-        return results
+        return self.dict_zip(results)
 
 
     def find_quickplay_heroes(self, soup, character, filter):
@@ -375,6 +375,16 @@ class Overwatch:
                     stats.append(attr.text)
                 all_stats[label.text.lower()] = stats
             return all_stats
+
+
+    def dict_zip(results):
+        """
+        Converts list of results into a dictionary
+        """
+        labels = [results[i] for i in range(0, len(results), 2)]
+        data = [results[i] for i in range(1, len(results), 2)]
+
+        return dict(zip(labels, data))
 
 
     def display_filters(self):
