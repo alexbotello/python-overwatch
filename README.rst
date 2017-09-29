@@ -10,23 +10,27 @@ Usage
 
 .. code:: python
 
-    Modes:  quickplay
-            competitive
+    Modes:  qp
+            cp
+            play_time
 
-    Filters: combat, assists, best, average, deaths, match awards
-             game, miscellaneous, hero specific, played
+    Filters: Combat, Assists, Best, Average, Deaths, Match Awards
+             Game, Miscellaneous, Hero Specific
+
+    # Default filter: 'Best'
+    # Default mode: 'qp'
 
 Examples
 ------------
 
-Find played time for all heroes
+Find play time for all heroes
 
 .. code:: python
 
     from overwatch import Overwatch
 
-    hero_time = Overwatch(battletag=battletag, mode='quickplay', filter='played')
-    results = hero_time.get_results()
+    hero_time = Overwatch(battletag=battletag, mode='play_time')
+    results = hero_time()
     print(results)
 
     [
@@ -44,8 +48,8 @@ Find hero specific stats
 
     from overwatch import Overwatch
 
-    mei = Overwatch(battletag=battletag, hero='mei', filter='hero specific')
-    results = mei.get_results()
+    mei = Overwatch(battletag=battletag, hero='mei', filter='Hero Specific')
+    results = mei()
     print(results)
 
     [
@@ -67,8 +71,8 @@ Find overall best stats
 
     from overwatch import Overwatch
 
-    best = Overwatch(battletag=battletag, hero='all', filter='best')
-    results = best.get_results()
+    best = Overwatch(battletag=battletag, hero='all')
+    results = best()
     print(results)
 
     [
@@ -91,9 +95,8 @@ Find how many D.VA self-destructs you've performed
 
     from overwatch import Overwatch
 
-    selfies = Overwatch(battletag=battletag, hero='dva',
-                        mode='quickplay', filter='miscellaneous')
-    results = selfies.get_results()
+    destructs = Overwatch(battletag=battletag, hero='dva', filter='Miscellaneous')
+    results = destructs()
     print(results)
 
     [
@@ -102,3 +105,27 @@ Find how many D.VA self-destructs you've performed
       'Multikill - Best', '3',
       'Self-Destruct Kills - Average', '2'
     ]
+
+Specify you want competitive mode stats
+
+.. code:: python
+
+    from overwatch import Overwatch
+
+    get_stats = Overwatch(battletag=battletag, mode='cp', hero='pharah')
+    results = get_stats()
+    print(results)
+
+    [
+      'Eliminations - Most In Life, '12',
+      'All Damage Done - Most In Game', '6,943',
+      'Weapon Accuracy - Best In Game', '65%',
+      'Kill Streak - Best', '12',
+      'All Damage Done - Most In Game', '37,699',
+      'Eliminations - Most In Game', '61',
+      'Final Blows - Most In Game', '45',
+      'Objective Kills - Most In Game', '33',
+      'Objective Time - Most In Game', '01:27',
+      'Solo Kills - Most In Game', '7' 
+    ]
+
