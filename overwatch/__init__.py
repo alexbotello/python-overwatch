@@ -3,7 +3,7 @@ import logging
 import daiquiri
 import requests
 from bs4 import BeautifulSoup
-from heroes import heroes
+from .heroes import heroes
 
 
 class Overwatch:
