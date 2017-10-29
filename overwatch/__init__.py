@@ -1,16 +1,16 @@
 import time
 import logging
-import daiquiri
 import requests
 from bs4 import BeautifulSoup
 from .heroes import heroes
 
 
 class Overwatch:
-    def __init__(self, battletag=None, mode='qp', hero='all', filter='Best', region='us'):
+    def __init__(self, battletag=None, mode='qp', hero='all', filter='Best',
+                 region='us', log_level=logging.ERROR, use_daquiri=False):
         # Init logger
-        self.start_logging()
-        
+        self.start_logging(log_level, daquiri=use_daquiri)
+
         self.url = 'https://playoverwatch.com/en-us/career/pc/'
         self.battletag = battletag.replace('#', '-')
         self.mode = mode
@@ -26,7 +26,7 @@ class Overwatch:
         if self.filter == "Hero Specific" and self.hero == 'all':
             self.logger.error(f"'{self.filter}' and '{self.hero}' are not valid filter combinations")
             exit()
-        
+
     def __call__(self):
         data = []
         resp = requests.get(self.url + self.region + '/' + self.battletag)
@@ -45,11 +45,15 @@ class Overwatch:
 
     def __repr__(self):
         return f"{self.battletag.replace('-', '#')}'|'{self.hero}'"
-    
-    def start_logging(self):
+
+    def start_logging(self, level, daquiri=False):
         """ Logging all the things..."""
-        daiquiri.setup(level=logging.INFO)
-        self.logger = daiquiri.getLogger()
+        if daquiri:
+            import daiquiri
+            daiquiri.setup(level=level)
+            self.logger = daiquiri.getLogger()
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def find_qp(self):
         """ Retrieve quickplay stats"""
@@ -57,13 +61,13 @@ class Overwatch:
         try:
             for stats in row.find_all('div', {'class': 'card-stat-block'}):
                 title = stats.find('h5', {'class': 'stat-title'})
-                
+
                 if title.text == self.filter:
                     for stat in stats.find_all('td'):
                         yield stat.text
         except AttributeError:
             self.logger.error(f'No quickplay stats found for {self.hero}')
-            exit()        
+            exit()
 
     def find_cp(self):
         """ Retrieve competitive stats """
@@ -72,7 +76,7 @@ class Overwatch:
         try:
             for stats in char.find_all('div', {'class': 'card-stat-block'}):
                 title = stats.find('h5', {'class': 'stat-title'})
-                
+
                 if title.text == self.filter:
                     for stat in stats.find_all('td'):
                         yield stat.text
