@@ -29,7 +29,7 @@ Find play time for all heroes
 
     from overwatch import Overwatch
 
-    hero_time = Overwatch(battletag=battletag, mode='play_time')
+    hero_time = Overwatch(battletag="Okush#11324", mode='play_time')
     results = hero_time()
     print(results)
 
@@ -48,7 +48,7 @@ Find hero specific stats
 
     from overwatch import Overwatch
 
-    mei = Overwatch(battletag=battletag, hero='mei', filter='Hero Specific')
+    mei = Overwatch(battletag="Okush#11324", hero='mei', filter='Hero Specific')
     results = mei()
     print(results)
 
@@ -71,7 +71,7 @@ Find overall best stats
 
     from overwatch import Overwatch
 
-    best = Overwatch(battletag=battletag, hero='all')
+    best = Overwatch(battletag="Okush#11324", hero='all')
     results = best()
     print(results)
 
@@ -95,7 +95,7 @@ Find how many D.VA self-destructs you've performed
 
     from overwatch import Overwatch
 
-    destructs = Overwatch(battletag=battletag, hero='dva', filter='Miscellaneous')
+    destructs = Overwatch(battletag="Okush#11324", hero='dva', filter='Miscellaneous')
     results = destructs()
     print(results)
 
@@ -112,7 +112,7 @@ Specify you want competitive mode stats
 
     from overwatch import Overwatch
 
-    get_stats = Overwatch(battletag=battletag, mode='cp', hero='pharah')
+    get_stats = Overwatch(battletag="Okush#11324", mode='cp', hero='pharah')
     results = get_stats()
     print(results)
 
