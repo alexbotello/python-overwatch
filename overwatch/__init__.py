@@ -7,7 +7,7 @@ from .heroes import heroes
 
 class Overwatch:
     def __init__(self, battletag=None, mode='qp', hero='all', filter='Best',
-                 region='us', log_level=logging.ERROR, use_daquiri=False):
+                 log_level=logging.ERROR, use_daquiri=False):
         # Init logger
         self.start_logging(log_level, daquiri=use_daquiri)
 
@@ -16,6 +16,7 @@ class Overwatch:
         self.mode = mode
         self.hero = hero
         self.filter = filter
+        self.resp = requests.get(self.url + 'us' + '/' + self.battletag)
 
         # Checks
         if self.filter == "Hero Specific" and self.hero == 'all':
@@ -24,8 +25,7 @@ class Overwatch:
 
     def __call__(self):
         data = []
-        resp = requests.get(self.url + self.region + '/' + self.battletag)
-        self.soup = BeautifulSoup(resp.content, 'lxml')
+        self.soup = BeautifulSoup(self.resp.content, 'lxml')
 
         if self.mode == 'qp':
             for stat in self.find_qp():
@@ -86,8 +86,10 @@ class Overwatch:
             yield char.find('div', {'class': 'title'}).text
             yield char.find('div', {'class': 'description'}).text
 
+    @property
     def filters(self):
         """ Display available filters for stats"""
-        limit = 9
-        results = self.soup.find_all('h5', {'class': 'stat-title'})
-        return [filters.text for x, filters in enumerate(results) if x < limit]
+        soup = BeautifulSoup(self.resp.content, 'lxml')        
+        results = soup.find_all('h5', {'class': 'stat-title'})
+        return set((filters.text for x, filters in enumerate(results)))
+
