@@ -16,13 +16,8 @@ class Overwatch:
         self.mode = mode
         self.hero = hero
         self.filter = filter
-        self.region = region
-        self.areas = ('na', 'eu', 'us', 'cn', 'kr')
 
         # Checks
-        if self.region not in self.areas:
-            self.logger.error("Not a valid region")
-            exit()
         if self.filter == "Hero Specific" and self.hero == 'all':
             self.logger.error(f"'{self.filter}' and '{self.hero}' are not valid filter combinations")
             exit()
