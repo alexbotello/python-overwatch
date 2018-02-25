@@ -5,6 +5,10 @@ Installation
 
     pip install python-overwatch
 
+Requirements
+------------
+Python 3.6
+
 Usage
 ------------
 
