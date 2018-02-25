@@ -1,4 +1,1 @@
-requests
-beautifulsoup4
-lxml
-daiquiri
+requests-html
