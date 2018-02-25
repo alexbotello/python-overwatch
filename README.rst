@@ -12,12 +12,11 @@ Usage
 
     Modes:  qp
             cp
-            play_time
 
-    Filters: Combat, Assists, Best, Average, Deaths, Match Awards
-             Game, Miscellaneous, Hero Specific
+    Filters: combat, assists, best, average, deaths, match awards
+             game, miscellaneous, hero specific
 
-    # Default filter: 'Best'
+    # Default filter: 'best'
     # Default mode: 'qp'
 
 Examples
@@ -29,9 +28,8 @@ Find play time for all heroes
 
     from overwatch import Overwatch
 
-    hero_time = Overwatch(battletag="Okush#11324", mode='play_time')
-    results = hero_time()
-    print(results)
+    ow = Overwatch(battletag="Okush#11324")
+    print(ow.playtime)
 
     [
       'Pharah', '40 hours',
@@ -48,7 +46,7 @@ Find hero specific stats
 
     from overwatch import Overwatch
 
-    mei = Overwatch(battletag="Okush#11324", hero='mei', filter='Hero Specific')
+    mei = Overwatch(battletag="Okush#11324", hero='mei', filter='hero specific')
     results = mei()
     print(results)
 
@@ -71,8 +69,8 @@ Find overall best stats
 
     from overwatch import Overwatch
 
-    best = Overwatch(battletag="Okush#11324", hero='all')
-    results = best()
+    ow = Overwatch(battletag="Okush#11324", hero='all')
+    results = ow()
     print(results)
 
     [
@@ -95,7 +93,7 @@ Find how many D.VA self-destructs you've performed
 
     from overwatch import Overwatch
 
-    destructs = Overwatch(battletag="Okush#11324", hero='dva', filter='Miscellaneous')
+    destructs = Overwatch(battletag="Okush#11324", hero='dva', filter='hero specific')
     results = destructs()
     print(results)
 
