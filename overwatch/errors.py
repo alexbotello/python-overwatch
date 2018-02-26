@@ -20,6 +20,13 @@ class InvalidCombination(Exception):
     pass
 
 
+class InvalidBattletag(Exception):
+    """
+    Raise when 'battletag' key word argument is none 
+    """
+    pass
+
+
 class NotFound(Exception):
     """
     Raise when stats could not be found
