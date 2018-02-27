@@ -1,19 +1,21 @@
-from requests_html import session
+from requests_html import HTMLSession
 
 from .heroes import heroes
 from .errors import (InvalidBattletag, InvalidCombination, InvalidFilter,
-                    InvalidHero, NotFound)
+                     InvalidHero, NotFound)
+
+session = HTMLSession()
 
 
 class Overwatch:
     def __init__(self, battletag=None, mode='qp', hero='all', filter='best'):
         self.url = 'https://playoverwatch.com/en-us/career/pc/'
-        
+
         try:
             self._battletag = battletag.replace('#', '-')
         except AttributeError:
             raise InvalidBattletag(f'battletag="{battletag}" is invalid')
-        
+
         self._mode = 0 if mode == 'qp' else 1
         self._hero = hero.lower()
         self._filter = filter.title()
@@ -33,7 +35,7 @@ class Overwatch:
 
         if self._filter not in self.filters:
             raise InvalidFilter(f'filter="{self._filter}" is invalid.')
-            
+
     def error_handler(func):
         def decorator(self, *args):
             try:
@@ -41,7 +43,7 @@ class Overwatch:
                 return results
             except IndexError:
                 raise NotFound(f"No results were found for {self._hero}"
-                                  " in this mode")
+                               " in this mode")
             except KeyError:
                 raise InvalidHero(f'hero="{self._hero}" is invalid.')
         return decorator
