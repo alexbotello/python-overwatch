@@ -1,4 +1,6 @@
-A wrapper for playoverwatch.com stats
+An Overwatch stat scraper designed for ease of use. 
+Plug in a battletag, select the desired hero and filter, and call the function.
+The data will be returned as a list, ready to manipulate and use as you wish.
 
 Installation
 ------------
