@@ -2,7 +2,7 @@ from requests_html import HTMLSession
 
 from .heroes import heroes
 from .errors import (InvalidBattletag, InvalidCombination, InvalidFilter,
-                     InvalidHero, NotFound)
+                    InvalidHero, NotFound)
 
 session = HTMLSession()
 
@@ -55,7 +55,7 @@ class Overwatch:
         cards = hero.find('.card-stat-block')
         for card in cards:
             if card.text.startswith(self._filter):
-                return card.text.split("\n")
+                return card.text.split("\n")[1:]
 
     @property
     def playtime(self):
