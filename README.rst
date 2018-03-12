@@ -34,8 +34,8 @@ Find play time for all heroes
 
     from overwatch import Overwatch
 
-    ow = Overwatch(battletag="Okush#11324")
-    print(ow.playtime)
+    overwatch = Overwatch(battletag="Okush#11324")
+    print(overwatch.playtime)
 
     [
       'Pharah', '40 hours',
@@ -52,9 +52,8 @@ Find hero specific stats
 
     from overwatch import Overwatch
 
-    mei = Overwatch(battletag="Okush#11324", hero='mei', filter='hero specific')
-    results = mei()
-    print(results)
+    overwatch = Overwatch(battletag="Okush#11324")
+    print(overwatch(hero="mei", filter="hero specific))
 
     [
       'Enemies Frozen', '1,885',
@@ -75,9 +74,8 @@ Find overall best stats
 
     from overwatch import Overwatch
 
-    ow = Overwatch(battletag="Okush#11324", hero='all')
-    results = ow()
-    print(results)
+    overwatch = Overwatch(battletag="Okush#11324")
+    print(overwatch())
 
     [
       'Eliminations - Most in Game', '48',
@@ -93,21 +91,32 @@ Find overall best stats
       'Time Spent on Fire - Most in Game', '13:29'
     ]
 
-Find how many D.VA self-destructs you've performed
+Find combat stats for any hero
 
 .. code:: python
 
     from overwatch import Overwatch
 
-    destructs = Overwatch(battletag="Okush#11324", hero='dva', filter='hero specific')
-    results = destructs()
-    print(results)
+    overwatch = Overwatch(battletag="Okush#11324")
+    print(overwatch(hero="dva", filter="combat"))
 
     [
-      'Self-Destruct Kills', '39',
-      'Self-Destruct Kills - Most in Game', '6',
-      'Multikill - Best', '3',
-      'Self-Destruct Kills - Average', '2'
+      'Eliminations', '541', 
+      'Deaths', '149', 
+      'Final Blows', '264', 
+      'Solo Kills', '89', 
+      'All Damage Done', '220,531', 
+      'Objective Kills', '172', 
+      'Objective Time', '30:47', 
+      'Multikills', '9', 
+      'Environmental Kills', '2', 
+      'Melee Final Blows', '5', 
+      Time Spent on Fire', '36:05', 
+      'Critical Hits', '4,436', 
+      'Hero Damage Done', '3,111', 
+      'Barrier Damage Done', '3,827', 
+      'Critical Hit Accuracy', '8%', 
+      'Weapon Accuracy', '31%']
     ]
 
 Specify you want competitive mode stats
@@ -116,9 +125,8 @@ Specify you want competitive mode stats
 
     from overwatch import Overwatch
 
-    get_stats = Overwatch(battletag="Okush#11324", mode='cp', hero='pharah')
-    results = get_stats()
-    print(results)
+    get_stats = Overwatch(battletag="Okush#11324")
+    print(overwatch(mode="cp", hero="pharah", filter="best"))
 
     [
       'Eliminations - Most In Life, '12',
