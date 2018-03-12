@@ -111,7 +111,7 @@ Find combat stats for any hero
       'Multikills', '9', 
       'Environmental Kills', '2', 
       'Melee Final Blows', '5', 
-      Time Spent on Fire', '36:05', 
+      'Time Spent on Fire', '36:05', 
       'Critical Hits', '4,436', 
       'Hero Damage Done', '3,111', 
       'Barrier Damage Done', '3,827', 
