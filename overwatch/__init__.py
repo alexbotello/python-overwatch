@@ -1,29 +1,40 @@
 from requests_html import HTMLSession
 
-from .heroes import heroes
-from .errors import (InvalidBattletag, InvalidCombination, InvalidFilter,
+from selections import heroes, compare
+from errors import (InvalidBattletag, InvalidCombination, InvalidFilter,
                      InvalidHero, NotFound)
 
+# TODO Figure out how to properly handle error for battletag being == None
 session = HTMLSession()
 
 
 class Overwatch:
-    def __init__(self, battletag=None, mode='qp', hero='all', filter='best'):
-        self.url = 'https://playoverwatch.com/en-us/career/pc/'
-
-        try:
-            self.battletag = battletag.replace('#', '-')
-        except AttributeError:
+    def __init__(self, battletag=None):
+        if battletag is None:
             raise InvalidBattletag(f'battletag="{battletag}" is invalid')
+        
+        self.battletag = battletag.replace('#', '-')
+        self.url = 'https://playoverwatch.com/en-us/career/pc/'
+        self.response = session.get(self.url + 'us' + '/' + self.battletag)
 
+    def __call__(self, mode='qp', hero='all', filter='best'):
+        """
+        Parameters
+        -----------
+        mode : `str`
+            Select quickplay or competitive game modes with `qp` or `cp`.
+            This defaults to `qp`
+        hero : `str`
+            The specific hero to select stats for. Defaults to `all`. 
+        filter : `str`
+            The specific stat category to retrieve. List of filters can be seen
+            using `Overwatch.filters`. This defaults to `best`.
+        """
         self.mode = 0 if mode == 'qp' else 1
         self.hero = hero.lower()
         self.filter = filter.title()
-        self.response = session.get(self.url + 'us' + '/' + self.battletag)
         self.initial_error_check()
-
-    def __call__(self):
-        return self.generate_stats()
+        return self._generate_hero_stats()
 
     def initial_error_check(self):
         if self.filter == "Hero Specific" and self.hero == 'all':
@@ -49,7 +60,7 @@ class Overwatch:
         return decorator
 
     @error_handler
-    def generate_stats(self):
+    def _generate_hero_stats(self):
         css_selector = f'div[data-category-id="{heroes[self.hero]}"]'
         hero = self.response.html.find(css_selector)
         mode = hero[self.mode]
@@ -57,14 +68,36 @@ class Overwatch:
         for card in cards:
             if card.text.startswith(self.filter):
                 return card.text.split("\n")[1:]
+    
+    def _generate_comparisons(self, selector):
+        data = self.response.html.find(f'div[data-category-id="{selector}"]')
+        comparison = data[self.mode]
+        return comparison.text
 
     @property
     def playtime(self):
-        tag = "overwatch.guid.0x0860000000000021"
-        time = self.response.html.find(f'div[data-category-id="{tag}"]')
-        time = time[self.mode]
-        return time.text.split('\n')
+        return self._generate_comparisons(compare['playtime']);
+    
+    @property
+    def games_won(self):
+        return self._generate_comparisons(compare['games']);     
 
+    @property
+    def weapon_accuracy(self):
+        return self._generate_comparisons(compare['weapons']);
+    
+    @property
+    def multikills(self):
+        return self._generate_comparisons(compare['multikills']);
+    
+    @property
+    def eliminations_per_life(self):
+        return self._generate_comparisons(compare['eliminations']);
+    
+    @property
+    def objective_kills(self):
+        return self._generate_comparisons(compare['objective']);
+    
     @property
     def filters(self):
         filters = self.response.html.find(".stat-title")

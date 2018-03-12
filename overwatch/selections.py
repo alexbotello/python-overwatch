@@ -27,3 +27,12 @@ heroes = {
     'orisa':       '0x02E000000000013E',
     'moira':       '0x02E00000000001A2'
 }
+
+compare = {
+    'playtime':     "overwatch.guid.0x0860000000000021",
+    'games':        "overwatch.guid.0x0860000000000039",
+    'weapons':      "overwatch.guid.0x086000000000002F",
+    'multikills':   "overwatch.guid.0x0860000000000346",
+    'eliminations': "overwatch.guid.0x08600000000003D2",
+    'objective':    "overwatch.guid.0x086000000000039C",
+}
