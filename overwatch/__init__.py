@@ -4,7 +4,7 @@ from selections import heroes, compare
 from errors import (InvalidBattletag, InvalidCombination, InvalidFilter,
                      InvalidHero, NotFound)
 
-# TODO Figure out how to properly handle error for battletag being == None
+
 session = HTMLSession()
 
 
@@ -72,7 +72,7 @@ class Overwatch:
     def _generate_comparisons(self, selector):
         data = self.response.html.find(f'div[data-category-id="{selector}"]')
         comparison = data[self.mode]
-        return comparison.text
+        return comparison.text.split("\n")
 
     @property
     def playtime(self):
