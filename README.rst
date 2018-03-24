@@ -125,7 +125,7 @@ Specify you want competitive mode stats
 
     from overwatch import Overwatch
 
-    get_stats = Overwatch(battletag="Okush#11324")
+    overwatch = Overwatch(battletag="Okush#11324")
     print(overwatch(mode="cp", hero="pharah", filter="best"))
 
     [
