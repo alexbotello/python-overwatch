@@ -25,7 +25,8 @@ heroes = {
     'doomfist':    '0x02E000000000012F',
     'ana':         '0x02E000000000013B', 
     'orisa':       '0x02E000000000013E',
-    'moira':       '0x02E00000000001A2'
+    'moira':       '0x02E00000000001A2',
+    'brigitte':    '0x02E0000000000195',
 }
 
 compare = {
