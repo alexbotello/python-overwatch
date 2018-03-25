@@ -1,7 +1,7 @@
 from requests_html import HTMLSession
 
-from selections import heroes, compare
-from errors import (InvalidBattletag, InvalidCombination, InvalidFilter,
+from .selections import heroes, compare
+from .errors import (InvalidBattletag, InvalidCombination, InvalidFilter,
                      InvalidHero, NotFound)
 
 
