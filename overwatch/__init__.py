@@ -9,10 +9,11 @@ session = HTMLSession()
 
 
 class Overwatch:
-    def __init__(self, battletag=None):
+    def __init__(self, battletag=None, mode='qp'):
         if battletag is None:
             raise InvalidBattletag(f'battletag="{battletag}" is invalid')
         
+        self.mode = 0 if mode == 'qp' else 1
         self.battletag = battletag.replace('#', '-')
         self.url = 'https://playoverwatch.com/en-us/career/pc/'
         self.response = session.get(self.url + 'us' + '/' + self.battletag)
@@ -76,27 +77,27 @@ class Overwatch:
 
     @property
     def playtime(self):
-        return self._generate_comparisons(compare['playtime']);
+        return self._generate_comparisons(compare['playtime'])
     
     @property
     def games_won(self):
-        return self._generate_comparisons(compare['games']);     
+        return self._generate_comparisons(compare['games'])     
 
     @property
     def weapon_accuracy(self):
-        return self._generate_comparisons(compare['weapons']);
+        return self._generate_comparisons(compare['weapons'])
     
     @property
     def multikills(self):
-        return self._generate_comparisons(compare['multikills']);
+        return self._generate_comparisons(compare['multikills'])
     
     @property
     def eliminations_per_life(self):
-        return self._generate_comparisons(compare['eliminations']);
+        return self._generate_comparisons(compare['eliminations'])
     
     @property
     def objective_kills(self):
-        return self._generate_comparisons(compare['objective']);
+        return self._generate_comparisons(compare['objective'])
     
     @property
     def filters(self):
